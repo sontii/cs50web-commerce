@@ -1,0 +1,37 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Categorie lists for: {{ category }}</h2>
+    <p></p>
+    <div class="itemlist">
+        {% for list in lists %}
+            {% if list.active == True %}
+                <div class="wrapper">
+                    <div class="pic">
+                        {% if list.itempic %}
+                        <img src="{{ list.itempic.url }}" max-width="300" max-height="200">
+                        {% else %}
+                            <img src="/media/nophoto.jpg" max-width="300" max-height="200">
+                        {% endif %}
+                    </div>
+                    <div class="cont">
+                        <h2><strong>Auction name: {{ list.name }}</strong></h2>
+                        <p></p>
+                        <h4><strong>Current price: ${{ list.bid }}</strong></h4>
+                        <p></p>
+                        {% if list.details %}
+                        <h4>Deatils: {{ list.details }}</h4>
+                        {% endif %}
+                        <p></p>
+                        Created: {{ list.timest }}
+                        <p></p>
+                        <a href={% url 'item' list.name %} class="btn btn-primary btn-lg active"
+                        role="button" aria-pressed="true">Go to {{ list.name }} auction</a>
+                    </div>
+                </div>
+            <p></p>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

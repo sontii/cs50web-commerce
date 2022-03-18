@@ -1,0 +1,100 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <div>
+        <div class="itemlist">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+                {% endfor %} 
+            {% endif %}
+
+            {% for list in lists %}
+                <h1>Listing: {{ list.name }}</h1>
+                <p></p>
+                {% if request.user.is_authenticated %}
+                    {% if onthelist %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="outwatchlist" class="btn btn-primary">Remove from watchlist</button>
+                        </form>
+                    {% else %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="towatchlist" class="btn btn-primary">To watchlist</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                <p></p>
+                {% if list.itempic %}
+                    <img src="{{ list.itempic.url }}" max-width="300" max-height="200">
+                {% else %}
+                    <img src="media/nophoto.jpg" max-width="300" max-height="200">
+                {% endif %}
+                <p></p>
+                <strong>Details: </strong>{{ list.details }}
+                <p></p>     
+                
+                {% if list.winner %}
+                    <strong>You won the auction with ${{ list.bid }}</strong>
+                {% else %}
+                    <h3><strong>current bid: ${{ list.bid }}</strong></h3>
+                    <p></p>
+                    {{ bid }} bid(s) so far. {% if bidder %} {{ bidder }} {% endif %}
+                {% endif %}
+
+                {% if request.user.is_authenticated and list.active == True %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <input class="form-control" name="placebid" type="number" placeholder="Bid">
+                    <p></p>
+                    <button class="btn btn-primary" type="submit">Place Bid</button>
+                </form>
+                {% endif %}
+                <p></p>
+                {% if request.user.is_authenticated and ownlist == True and active == True %}
+                <form method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-warning" name="closeauction" type="submit">Close Auction</button>
+                </form>
+                {% endif %}
+                <p></p>
+                <h2>Details</h2>
+                <ul>
+                    <li>Listed by: <b style="color:blue;">{{ list.user }}</b></li>
+                    <li>Category: {% if list.category %} {{ list.category }} {% else %} No Category Listed {% endif %}</li>
+                </ul>
+            {% endfor %}
+            <p></p>
+            <h1> Comments: </h1>
+            <p></p>
+
+            {% for comment in comment %}
+                <div class="form-floating">
+                    <label for="floatingTextarea">{{ comment.user }}:</label>
+                    <textarea class="form-control" id="floatingTextarea" disabled>{{ comment.comment }}</textarea>
+                </div>
+                <p></p>
+            {% endfor %}
+            <p></p>
+            {% if request.user.is_authenticated %}
+            Leave comment:
+            <p></p> 
+            {% for list in lists %}
+            <form method="POST">
+                {% csrf_token %}
+                <div class="bg-light p-2">
+                    <div class="d-flex flex-row align-items-start">
+                        <textarea class="form-control ml-1 shadow-none textarea" name="addcomment"></textarea>
+                    </div>
+                    <div class="mt-2 text-right">
+                        <button class="btn btn-primary btn-sm shadow-none" type="submit">Post comment</button>
+                    </div>
+                </div>
+            </form>
+            {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    
+{% endblock %}

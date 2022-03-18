@@ -1,0 +1,25 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>Watchlist</h2>
+    <div class="itemlist">
+        {% for list in lists %}    
+            <div class="wrapper">
+                <div class="pic">
+                    <img src="{{ list.item.itempic.url }}" max-width="300" max-height="200">
+                </div>
+                <div class="cont">
+                        <h2><strong>{{ list.item.name }}</strong></h2>
+                        <p></p>
+                        <h4><strong>price: ${{ list.item.bid }}</strong></h4>
+                        <p></p>
+                        Created: {{ list.item.timest }}
+                        <p></p>
+                        <a href={% url 'item' item=list.item.name %} class="btn btn-primary btn-lg active"
+                        role="button" aria-pressed="true">Go to {{ list.item.name }} auction</a>
+                </div>
+            </div>
+            <p></p>
+        {% endfor %}
+    </div>
+{% endblock %}
